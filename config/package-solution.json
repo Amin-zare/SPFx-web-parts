@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "sp-fx-web-parts-client-side-solution",
+    "id": "6f2f3444-cf2d-4db8-8e8d-e48e1c4a6794",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.18.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "sp-fx-web-parts description"
+      },
+      "longDescription": {
+        "default": "sp-fx-web-parts description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "sp-fx-web-parts Feature",
+        "description": "The feature that activates elements of the sp-fx-web-parts solution.",
+        "id": "e520b91a-9213-4187-9a43-79c4c6b1b52e",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/sp-fx-web-parts.sppkg"
+  }
+}
