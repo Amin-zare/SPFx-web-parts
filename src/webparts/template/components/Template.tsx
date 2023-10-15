@@ -5,6 +5,7 @@ import { escape } from "@microsoft/sp-lodash-subset";
 import { SPHttpClient, SPHttpClientResponse } from "@microsoft/sp-http";
 import ListItems from "./lists/ListItems";
 import { ISPLists, IState } from "./lists/IList";
+import { MSGraphClientV3 } from "@microsoft/sp-http";
 
 export default class Template extends React.Component<ITemplateProps, IState> {
   constructor(props: ITemplateProps) {
@@ -12,6 +13,7 @@ export default class Template extends React.Component<ITemplateProps, IState> {
 
     this.state = {
       listData: [],
+      listMessages: [],
     };
   }
 
@@ -19,6 +21,7 @@ export default class Template extends React.Component<ITemplateProps, IState> {
   componentDidMount() {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.getListData();
+    this.getMessages();
   }
 
   getListData = (): Promise<ISPLists> => {
@@ -39,6 +42,33 @@ export default class Template extends React.Component<ITemplateProps, IState> {
       });
   };
 
+  getMessages() {
+    const { context } = this.props;
+
+    if (context && context.msGraphClientFactory) {
+      return context.msGraphClientFactory
+        .getClient("3")
+        .then((client: MSGraphClientV3): void => {
+          client
+            .api("/me/messages")
+            .top(5)
+            .orderby("receivedDateTime desc")
+            .get((error, messages: any) => {
+              if (error) {
+                console.error("Error fetching user information:", error);
+              } else {
+                this.setState({ listMessages: messages.value });
+              }
+            });
+        })
+        .catch((error: any) => {
+          console.error("Error setting up Graph client:", error);
+        });
+    } else {
+      console.error("Context or msGraphClientFactory is not available.");
+    }
+  }
+
   public render(): React.ReactElement<ITemplateProps> {
     const {
       description,
@@ -55,6 +85,15 @@ export default class Template extends React.Component<ITemplateProps, IState> {
       itemName,
     } = this.props;
     const { listData } = this.state;
+    const { listMessages } = this.state;
+
+    const listMessage = listMessages.map((item) => (
+      <ul key={item.id}>
+        <li>
+          <span className="ms-font-l">{item.subject}</span>
+        </li>
+      </ul>
+    ));
 
     return (
       <section
@@ -106,6 +145,11 @@ export default class Template extends React.Component<ITemplateProps, IState> {
           <div>
             <div>
               Item name: <strong>{escape(itemName)}</strong>
+            </div>
+          </div>
+          <div>
+            <div>
+              Email: <strong>{listMessage}</strong>
             </div>
           </div>
         </div>
