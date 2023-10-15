@@ -14,6 +14,7 @@ export default class Template extends React.Component<ITemplateProps, {}> {
       environmentMessage,
       hasTeamsContext,
       userDisplayName,
+      context,
     } = this.props;
 
     return (
@@ -46,6 +47,12 @@ export default class Template extends React.Component<ITemplateProps, {}> {
           </div>
           <div>
             Multi-line : <strong>{escape(multiLineText)}</strong>
+          </div>
+          <div>
+            <div>
+              Loading from :{" "}
+              <strong>{escape(context.pageContext.web.title)}</strong>
+            </div>
           </div>
         </div>
       </section>
