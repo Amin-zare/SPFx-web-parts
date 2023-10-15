@@ -19,6 +19,7 @@
     "SharePointFullPage"
   ],
   "supportsThemeVariants": true,
+  // "hiddenFromToolbox": true,
 
   "preconfiguredEntries": [
     {
@@ -26,7 +27,7 @@
       "group": { "default": "Advanced" },
       "title": { "default": "Template" },
       "description": { "default": "Template description" },
-      "officeFabricIconFontName": "Page",
+      "officeFabricIconFontName": "SharepointLogo",
       "properties": {
         "description": "Template",
         "checkbox": true,
