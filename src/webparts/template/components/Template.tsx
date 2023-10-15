@@ -7,6 +7,9 @@ export default class Template extends React.Component<ITemplateProps, {}> {
   public render(): React.ReactElement<ITemplateProps> {
     const {
       description,
+      checkbox,
+      toggle,
+      multiLineText,
       isDarkTheme,
       environmentMessage,
       hasTeamsContext,
@@ -31,6 +34,18 @@ export default class Template extends React.Component<ITemplateProps, {}> {
           <div> Environment Message :{environmentMessage}</div>
           <div>
             Description : <strong>{escape(description)}</strong>
+          </div>
+          <div>
+            Checkbox :
+            <strong>
+              {checkbox ? "Checkbox is checked" : "Checkbox is not checked"}
+            </strong>
+          </div>
+          <div>
+            Toggle :<strong>{toggle ? "Toggle is on" : "Toggle is off"}</strong>
+          </div>
+          <div>
+            Multi-line : <strong>{escape(multiLineText)}</strong>
           </div>
         </div>
       </section>
