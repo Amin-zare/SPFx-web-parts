@@ -51,6 +51,8 @@ export default class Template extends React.Component<ITemplateProps, IState> {
       userDisplayName,
       context,
       Rating,
+      listName,
+      itemName,
     } = this.props;
     const { listData } = this.state;
 
@@ -94,6 +96,16 @@ export default class Template extends React.Component<ITemplateProps, IState> {
           <div>
             <div>
               Rating : <strong>{Rating}</strong>
+            </div>
+          </div>
+          <div>
+            <div>
+              List name: <strong>{escape(listName)}</strong>
+            </div>
+          </div>
+          <div>
+            <div>
+              Item name: <strong>{escape(itemName)}</strong>
             </div>
           </div>
         </div>
