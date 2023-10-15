@@ -2,8 +2,43 @@ import * as React from "react";
 import styles from "./Template.module.scss";
 import type { ITemplateProps } from "./ITemplateProps";
 import { escape } from "@microsoft/sp-lodash-subset";
+import { SPHttpClient, SPHttpClientResponse } from "@microsoft/sp-http";
+import ListItems from "./lists/ListItems";
+import { ISPLists, IState } from "./lists/IList";
 
-export default class Template extends React.Component<ITemplateProps, {}> {
+export default class Template extends React.Component<ITemplateProps, IState> {
+  constructor(props: ITemplateProps) {
+    super(props);
+
+    this.state = {
+      listData: [],
+    };
+  }
+
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  componentDidMount() {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    this.getListData();
+  }
+
+  getListData = (): Promise<ISPLists> => {
+    const { context } = this.props;
+    return context.spHttpClient
+      .get(
+        `${context.pageContext.web.absoluteUrl}/_api/web/lists?$filter=Hidden eq false`,
+        SPHttpClient.configurations.v1
+      )
+      .then((response: SPHttpClientResponse) => {
+        return response.json();
+      })
+      .then((data: ISPLists) => {
+        this.setState({ listData: data.value });
+      })
+      .catch((error: string) => {
+        console.error("Something happened:", error);
+      });
+  };
+
   public render(): React.ReactElement<ITemplateProps> {
     const {
       description,
@@ -16,6 +51,7 @@ export default class Template extends React.Component<ITemplateProps, {}> {
       userDisplayName,
       context,
     } = this.props;
+    const { listData } = this.state;
 
     return (
       <section
@@ -55,6 +91,7 @@ export default class Template extends React.Component<ITemplateProps, {}> {
             </div>
           </div>
         </div>
+        <ListItems listData={listData} />
       </section>
     );
   }
