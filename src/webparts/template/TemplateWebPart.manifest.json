@@ -31,7 +31,8 @@
         "description": "Template",
         "checkbox": true,
         "toggle": false,
-        "multiLineText": ""
+        "multiLineText": "",
+        "ListTitle": ""
       }
     }
   ]
