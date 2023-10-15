@@ -4,6 +4,7 @@ declare interface ITemplateWebPartStrings {
   DescriptionFieldLabel: string;
   ToggleFieldLabel: string;
   MultiLineFieldLabel: string;
+  RatingFieldLabel: string;
   AppLocalEnvironmentSharePoint: string;
   AppLocalEnvironmentTeams: string;
   AppLocalEnvironmentOffice: string;

@@ -6,6 +6,8 @@ import {
   PropertyPaneTextField,
   PropertyPaneCheckbox,
   PropertyPaneToggle,
+  PropertyPaneLink,
+  PropertyPaneSlider,
 
 } from '@microsoft/sp-property-pane';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
@@ -20,6 +22,7 @@ export interface ITemplateWebPartProps {
   checkbox: boolean;
   toggle: boolean;
   multiLineText: string;
+  Rating: number;
 }
 
 export default class TemplateWebPart extends BaseClientSideWebPart<ITemplateWebPartProps> {
@@ -39,7 +42,8 @@ export default class TemplateWebPart extends BaseClientSideWebPart<ITemplateWebP
         isDarkTheme: this._isDarkTheme,
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName
+        userDisplayName: this.context.pageContext.user.displayName,
+        Rating: this.properties.Rating
       }
     );
 
@@ -133,6 +137,19 @@ export default class TemplateWebPart extends BaseClientSideWebPart<ITemplateWebP
                   label: strings.MultiLineFieldLabel,
                   multiline: true
                 }),
+                PropertyPaneLink('linkProperty', {
+                  href: 'https://learn.microsoft.com/en-us/sharepoint/dev/spfx/web-parts/basics/integrate-with-property-pane',
+                  text: 'Click to view usage and configuration details',
+                  target: '_blank'
+                }),
+                PropertyPaneSlider('Rating', {
+                  label: strings.RatingFieldLabel,
+                  min: 1,
+                  max: 10,
+                  step: 1,
+                  showValue: true,
+                  value: 1
+                })
               ]
             }
           ]

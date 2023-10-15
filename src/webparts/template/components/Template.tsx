@@ -50,6 +50,7 @@ export default class Template extends React.Component<ITemplateProps, IState> {
       hasTeamsContext,
       userDisplayName,
       context,
+      Rating,
     } = this.props;
     const { listData } = this.state;
 
@@ -88,6 +89,11 @@ export default class Template extends React.Component<ITemplateProps, IState> {
             <div>
               Loading from :{" "}
               <strong>{escape(context.pageContext.web.title)}</strong>
+            </div>
+          </div>
+          <div>
+            <div>
+              Rating : <strong>{Rating}</strong>
             </div>
           </div>
         </div>
