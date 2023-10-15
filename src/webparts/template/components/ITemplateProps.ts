@@ -9,4 +9,6 @@ export interface ITemplateProps {
   userDisplayName: string;
   context: any;
   Rating: number;
+  listName: string;
+  itemName: string;
 }
