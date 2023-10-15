@@ -7,4 +7,5 @@ export interface ITemplateProps {
   environmentMessage: string;
   hasTeamsContext: boolean;
   userDisplayName: string;
+  context: any;
 }
