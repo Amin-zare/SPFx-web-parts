@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import * as React from "react";
 import styles from "./Template.module.scss";
 import { escape } from "@microsoft/sp-lodash-subset";
-import { SPHttpClient, SPHttpClientResponse } from "@microsoft/sp-http";
 import ListItems from "./lists/ListItems";
 import { ITemplateProps } from "./ITemplateProps";
 import { ISPLists } from "./lists/IList";
 import { MSGraphClientV3 } from "@microsoft/sp-http";
+import { getListData } from "./lists/ListService";
 
 const Template: React.FC<ITemplateProps> = (props) => {
   const {
@@ -35,23 +35,6 @@ const Template: React.FC<ITemplateProps> = (props) => {
 
   const [listData, setListData] = useState<ISPLists>({ value: [] });
   const [listMessages, setListMessages] = useState<Message[]>([]);
-
-  const getListData = (): void => {
-    context.spHttpClient
-      .get(
-        `${context.pageContext.web.absoluteUrl}/_api/web/lists?$filter=Hidden eq false`,
-        SPHttpClient.configurations.v1
-      )
-      .then((response: SPHttpClientResponse) => {
-        return response.json();
-      })
-      .then((data: ISPLists) => {
-        setListData(data);
-      })
-      .catch((error: string) => {
-        console.error("Something happened:", error);
-      });
-  };
 
   const getMessages = (): void => {
     const { context } = props;
@@ -82,7 +65,14 @@ const Template: React.FC<ITemplateProps> = (props) => {
 
   useEffect(() => {
     // Fetch list data when the component mounts
-    getListData();
+    getListData(context)
+      .then((data: ISPLists) => {
+        setListData(data);
+      })
+      .catch((error: string) => {
+        console.error("Error fetching list data:", error);
+      });
+
     getMessages();
   }, []);
 
