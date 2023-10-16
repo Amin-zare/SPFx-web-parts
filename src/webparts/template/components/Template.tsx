@@ -4,9 +4,9 @@ import type { ITemplateProps } from "./ITemplateProps";
 import { escape } from "@microsoft/sp-lodash-subset";
 import ListItems from "./lists/ListItems";
 import { IState } from "./lists/IList";
-import { MSGraphClientV3 } from "@microsoft/sp-http";
 import { getListData } from "./lists/ListService"; // Import getListData
-
+import { getMessages } from "./email/GraphService"; // Import getMessages
+import MessageList from "./email/MessageList";
 export default class Template extends React.Component<ITemplateProps, IState> {
   constructor(props: ITemplateProps) {
     super(props);
@@ -26,38 +26,14 @@ export default class Template extends React.Component<ITemplateProps, IState> {
         // Handle any unhandled Promise rejections here
         console.error("Unhandled Promise rejection:", error);
       });
-    this.getMessages().catch((error: string) => {
-      // Handle any unhandled Promise rejections here
-      console.error("Unhandled Promise rejection:", error);
-    });
-  }
-
-  getMessages(): Promise<void> {
-    const { context } = this.props;
-
-    if (context && context.msGraphClientFactory) {
-      return context.msGraphClientFactory
-        .getClient("3")
-        .then((client: MSGraphClientV3): Promise<void> => {
-          return client
-            .api("/me/messages")
-            .top(5)
-            .orderby("receivedDateTime desc")
-            .get()
-            .then((messages: any) => {
-              this.setState({ listMessages: messages.value });
-            })
-            .catch((error: any) => {
-              console.error("Error fetching user information:", error);
-            });
-        })
-        .catch((error: any) => {
-          console.error("Error setting up Graph client:", error);
-        });
-    } else {
-      console.error("Context or msGraphClientFactory is not available.");
-      return Promise.resolve(); // Return a resolved Promise to handle the missing Promise rejection
-    }
+    getMessages(this.props.context)
+      .then((messages) => {
+        this.setState({ listMessages: messages });
+      })
+      .catch((error) => {
+        // Handle any unhandled Promise rejections here
+        console.error("Unhandled Promise rejection:", error);
+      });
   }
 
   public render(): React.ReactElement<ITemplateProps> {
@@ -81,14 +57,6 @@ export default class Template extends React.Component<ITemplateProps, IState> {
     } = this.props;
     const { listData } = this.state;
     const { listMessages } = this.state;
-
-    const listMessage = listMessages.map((item) => (
-      <ul key={item.id}>
-        <li>
-          <span className="ms-font-l">{item.subject}</span>
-        </li>
-      </ul>
-    ));
 
     return (
       <section
@@ -144,7 +112,12 @@ export default class Template extends React.Component<ITemplateProps, IState> {
           </div>
           <div>
             <div>
-              Email: <strong>{listMessage}</strong>
+              Email:{" "}
+              <strong>
+                {" "}
+                <MessageList messages={listMessages} />{" "}
+                {/* Use the MessageList component */}
+              </strong>
             </div>
           </div>
         </div>
