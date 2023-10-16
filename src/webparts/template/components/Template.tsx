@@ -19,6 +19,8 @@ const Template: React.FC<ITemplateProps> = (props) => {
     userDisplayName,
     context,
     Rating,
+    listName,
+    itemName,
   } = props;
 
   const [listData, setListData] = useState<ISPLists>({ value: [] });
@@ -84,6 +86,16 @@ const Template: React.FC<ITemplateProps> = (props) => {
         <div>
           <div>
             Rating : <strong>{Rating}</strong>
+          </div>
+        </div>
+        <div>
+          <div>
+            List name: <strong>{escape(listName)}</strong>
+          </div>
+        </div>
+        <div>
+          <div>
+            Item name: <strong>{escape(itemName)}</strong>
           </div>
         </div>
       </div>

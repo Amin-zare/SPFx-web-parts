@@ -15,6 +15,8 @@ declare interface ITemplateWebPartStrings {
   AppOutlookEnvironment: string;
   UnknownEnvironment: string;
   ListTitleFieldLabel: string;
+  ListNameFieldLabel: string;
+  ItemNameFieldLabel: string;
 }
 
 declare module 'TemplateWebPartStrings' {
