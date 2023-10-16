@@ -2,10 +2,10 @@ import * as React from "react";
 import styles from "./Template.module.scss";
 import type { ITemplateProps } from "./ITemplateProps";
 import { escape } from "@microsoft/sp-lodash-subset";
-import { SPHttpClient, SPHttpClientResponse } from "@microsoft/sp-http";
 import ListItems from "./lists/ListItems";
-import { ISPLists, IState } from "./lists/IList";
+import { IState } from "./lists/IList";
 import { MSGraphClientV3 } from "@microsoft/sp-http";
+import { getListData } from "./lists/ListService"; // Import getListData
 
 export default class Template extends React.Component<ITemplateProps, IState> {
   constructor(props: ITemplateProps) {
@@ -18,33 +18,19 @@ export default class Template extends React.Component<ITemplateProps, IState> {
   }
 
   componentDidMount(): void {
-    this.getListData().catch((error: string) => {
-      // Handle any unhandled Promise rejections here
-      console.error("Unhandled Promise rejection:", error);
-    });
+    getListData(this.props.context)
+      .then((data) => {
+        this.setState({ listData: data.value });
+      })
+      .catch((error) => {
+        // Handle any unhandled Promise rejections here
+        console.error("Unhandled Promise rejection:", error);
+      });
     this.getMessages().catch((error: string) => {
       // Handle any unhandled Promise rejections here
       console.error("Unhandled Promise rejection:", error);
     });
   }
-
-  getListData = (): Promise<ISPLists> => {
-    const { context } = this.props;
-    return context.spHttpClient
-      .get(
-        `${context.pageContext.web.absoluteUrl}/_api/web/lists?$filter=Hidden eq false`,
-        SPHttpClient.configurations.v1
-      )
-      .then((response: SPHttpClientResponse) => {
-        return response.json();
-      })
-      .then((data: ISPLists) => {
-        this.setState({ listData: data.value });
-      })
-      .catch((error: string) => {
-        console.error("Something happened:", error);
-      });
-  };
 
   getMessages(): Promise<void> {
     const { context } = this.props;
