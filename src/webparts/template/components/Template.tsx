@@ -17,11 +17,15 @@ export default class Template extends React.Component<ITemplateProps, IState> {
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  componentDidMount() {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.getListData();
-    this.getMessages();
+  componentDidMount(): void {
+    this.getListData().catch((error: string) => {
+      // Handle any unhandled Promise rejections here
+      console.error("Unhandled Promise rejection:", error);
+    });
+    this.getMessages().catch((error: string) => {
+      // Handle any unhandled Promise rejections here
+      console.error("Unhandled Promise rejection:", error);
+    });
   }
 
   getListData = (): Promise<ISPLists> => {
@@ -42,23 +46,23 @@ export default class Template extends React.Component<ITemplateProps, IState> {
       });
   };
 
-  getMessages() {
+  getMessages(): Promise<void> {
     const { context } = this.props;
 
     if (context && context.msGraphClientFactory) {
       return context.msGraphClientFactory
         .getClient("3")
-        .then((client: MSGraphClientV3): void => {
-          client
+        .then((client: MSGraphClientV3): Promise<void> => {
+          return client
             .api("/me/messages")
             .top(5)
             .orderby("receivedDateTime desc")
-            .get((error, messages: any) => {
-              if (error) {
-                console.error("Error fetching user information:", error);
-              } else {
-                this.setState({ listMessages: messages.value });
-              }
+            .get()
+            .then((messages: any) => {
+              this.setState({ listMessages: messages.value });
+            })
+            .catch((error: any) => {
+              console.error("Error fetching user information:", error);
             });
         })
         .catch((error: any) => {
@@ -66,6 +70,7 @@ export default class Template extends React.Component<ITemplateProps, IState> {
         });
     } else {
       console.error("Context or msGraphClientFactory is not available.");
+      return Promise.resolve(); // Return a resolved Promise to handle the missing Promise rejection
     }
   }
 
