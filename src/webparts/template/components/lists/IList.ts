@@ -1,3 +1,5 @@
+import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
+
 export interface ISPLists {
   value: ISPList[];
 }
@@ -7,5 +9,6 @@ export interface ISPList {
 }
 export interface IState {
   listData: ISPList[];
+  listMessages: MicrosoftGraph.Message[];
 }
 

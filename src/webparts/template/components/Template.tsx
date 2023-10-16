@@ -6,6 +6,7 @@ import { SPHttpClient, SPHttpClientResponse } from "@microsoft/sp-http";
 import ListItems from "./lists/ListItems";
 import { ITemplateProps } from "./ITemplateProps";
 import { ISPLists } from "./lists/IList";
+import { MSGraphClientV3 } from "@microsoft/sp-http";
 
 const Template: React.FC<ITemplateProps> = (props) => {
   const {
@@ -23,7 +24,13 @@ const Template: React.FC<ITemplateProps> = (props) => {
     itemName,
   } = props;
 
+  interface Message {
+    id: string;
+    subject: string;
+  }
+
   const [listData, setListData] = useState<ISPLists>({ value: [] });
+  const [listMessages, setListMessages] = useState<Message[]>([]);
 
   const getListData = (): void => {
     context.spHttpClient
@@ -41,10 +48,47 @@ const Template: React.FC<ITemplateProps> = (props) => {
         console.error("Something happened:", error);
       });
   };
+
+  const getMessages = (): void => {
+    const { context } = props;
+
+    if (context && context.msGraphClientFactory) {
+      context.msGraphClientFactory
+        .getClient("3")
+        .then((client: MSGraphClientV3): Promise<void> => {
+          return client
+            .api("/me/messages")
+            .top(5)
+            .orderby("receivedDateTime desc")
+            .get((error, messages) => {
+              if (error) {
+                console.error("Error fetching user information:", error);
+              } else {
+                setListMessages(messages.value);
+              }
+            });
+        })
+        .catch((error: string) => {
+          console.error("Error setting up Graph client:", error);
+        });
+    } else {
+      console.error("Context or msGraphClientFactory is not available.");
+    }
+  };
+
   useEffect(() => {
     // Fetch list data when the component mounts
     getListData();
+    getMessages();
   }, []);
+
+  const listMessage = listMessages.map((item) => (
+    <ul key={item.id}>
+      <li>
+        <span className="ms-font-l">{item.subject}</span>
+      </li>
+    </ul>
+  ));
 
   return (
     <section
@@ -96,6 +140,11 @@ const Template: React.FC<ITemplateProps> = (props) => {
         <div>
           <div>
             Item name: <strong>{escape(itemName)}</strong>
+          </div>
+        </div>
+        <div>
+          <div>
+            Email: <strong>{listMessage}</strong>
           </div>
         </div>
       </div>
