@@ -7,6 +7,9 @@ import { IState } from "./lists/IList";
 import { getListData } from "./lists/ListService"; // Import getListData
 import { getMessages } from "./email/GraphService"; // Import getMessages
 import MessageList from "./email/MessageList";
+import { needsConfiguration } from "./Configuration/ConfigurationChecker";
+import ConfigurationDisplay from "./Configuration/ConfigurationDisplay"; // Import the ConfigurationDisplay component
+
 export default class Template extends React.Component<ITemplateProps, IState> {
   constructor(props: ITemplateProps) {
     super(props);
@@ -14,6 +17,7 @@ export default class Template extends React.Component<ITemplateProps, IState> {
     this.state = {
       listData: [],
       listMessages: [],
+      needsConfiguration: false,
     };
   }
 
@@ -34,6 +38,15 @@ export default class Template extends React.Component<ITemplateProps, IState> {
         // Handle any unhandled Promise rejections here
         console.error("Unhandled Promise rejection:", error);
       });
+    if (
+      needsConfiguration(
+        this.props.preconfiguredListName,
+        this.props.order,
+        this.props.style
+      )
+    ) {
+      this.setState({ needsConfiguration: true });
+    }
   }
 
   public render(): React.ReactElement<ITemplateProps> {
@@ -50,13 +63,10 @@ export default class Template extends React.Component<ITemplateProps, IState> {
       Rating,
       listName,
       itemName,
-      preconfiguredListName,
-      order,
-      style,
-      numberOfItems,
     } = this.props;
     const { listData } = this.state;
     const { listMessages } = this.state;
+    const { needsConfiguration } = this.state;
 
     return (
       <section
@@ -122,114 +132,19 @@ export default class Template extends React.Component<ITemplateProps, IState> {
           </div>
         </div>
         <ListItems listData={listData} />
-        {this.needsConfiguration() ? (
-          <div
-            className="ms-Grid"
-            style={{
-              color: "#666",
-              backgroundColor: "#f4f4f4",
-              padding: "80px 0",
-              alignItems: "center",
-              boxAlign: "center",
-            }}
-          >
-            <div className="ms-Grid-row" style={{ color: "#333" }}>
-              <div className="ms-Grid-col ms-u-hiddenSm ms-u-md3" />
-              <div
-                className="ms-Grid-col ms-u-sm12 ms-u-md6"
-                style={{
-                  height: "100%",
-                  whiteSpace: "nowrap",
-                  textAlign: "center",
-                }}
-              >
-                <i
-                  className="ms-fontSize-su ms-Icon ms-Icon--ThumbnailView"
-                  style={{
-                    display: "inline-block",
-                    verticalAlign: "middle",
-                    whiteSpace: "normal",
-                  }}
-                />
-                <span
-                  className="ms-fontWeight-light ms-fontSize-xxl"
-                  style={{
-                    paddingLeft: "20px",
-                    display: "inline-block",
-                    verticalAlign: "middle",
-                    whiteSpace: "normal",
-                  }}
-                >
-                  Gallery
-                </span>
-              </div>
-              <div className="ms-Grid-col ms-u-hiddenSm ms-u-md3" />
-            </div>
-            <div
-              className="ms-Grid-row"
-              style={{
-                width: "65%",
-                verticalAlign: "middle",
-                margin: "0 auto",
-                textAlign: "center",
-              }}
-            >
-              <span
-                style={{
-                  color: "#666",
-                  fontSize: "17px",
-                  display: "inline-block",
-                  margin: "24px 0",
-                  fontWeight: 100,
-                }}
-              >
-                Show items from the selected list
-              </span>
-            </div>
-            <div className="ms-Grid-row" />
-          </div>
+
+        {needsConfiguration ? (
+          <ConfigurationDisplay
+            needsConfiguration={needsConfiguration}
+            preconfiguredListName={""}
+            order={""}
+            numberOfItems={0}
+            style={""}
+          />
         ) : (
-          <div>
-            <div>
-              <div
-                className={`ms-Grid-row ms-bgColor-themeDark ms-fontColor-white `}
-              >
-                <div className="ms-Grid-col ms-u-lg10 ms-u-xl8 ms-u-xlPush2 ms-u-lgPush1">
-                  <span className="ms-font-xl ms-fontColor-white">
-                    Welcome to SharePoint!
-                  </span>
-                  <p className="ms-font-l ms-fontColor-white">
-                    Customize SharePoint experiences using web parts.
-                  </p>
-                  <p className="ms-font-l ms-fontColor-white">
-                    List: {escape(preconfiguredListName)}
-                    <br />
-                    Order: {escape(order)}
-                    <br />
-                    Number of items: {numberOfItems}
-                    <br />
-                    Style: {escape(style)}
-                  </p>
-                  <a href="https://aka.ms/spfx">
-                    <span>Learn more</span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
+          <></>
         )}
       </section>
     );
-  }
-  private needsConfiguration(): boolean {
-    return (
-      Template.isEmpty(this.props.preconfiguredListName) ||
-      Template.isEmpty(this.props.order) ||
-      Template.isEmpty(this.props.style)
-    );
-  }
-
-  private static isEmpty(value: string): boolean {
-    return value === undefined || value === null || value.length === 0;
   }
 }
