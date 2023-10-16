@@ -82,7 +82,6 @@ export default class TemplateWebPart extends BaseClientSideWebPart<ITemplateWebP
   }
 
   private async loadLists(): Promise<IPropertyPaneDropdownOption[]> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return await new Promise<IPropertyPaneDropdownOption[]>((resolve: (options: IPropertyPaneDropdownOption[]) => void, _reject: (error: any) => void) => {
       setTimeout((): void => {
         resolve([{
@@ -104,7 +103,6 @@ export default class TemplateWebPart extends BaseClientSideWebPart<ITemplateWebP
     }
 
     // This is where you'd replace the mock data with the actual data from SharePoint
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return await new Promise<IPropertyPaneDropdownOption[]>((resolve: (options: IPropertyPaneDropdownOption[]) => void, reject: (error: any) => void) => {
       // timeout to simulate async call
       setTimeout(() => {
