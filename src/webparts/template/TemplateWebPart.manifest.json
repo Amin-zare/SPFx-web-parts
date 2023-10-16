@@ -35,7 +35,11 @@
         "multiLineText": "",
         "ListTitle": "",
         "listName": "",
-        "itemName": ""
+        "itemName": "",
+        "preconfiguredListName": "",
+        "order": "",
+        "numberOfItems": 10,
+        "style": ""
       }
     }
   ]

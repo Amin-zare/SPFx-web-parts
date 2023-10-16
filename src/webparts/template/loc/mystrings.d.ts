@@ -17,6 +17,13 @@ declare interface ITemplateWebPartStrings {
   ListTitleFieldLabel: string;
   ListNameFieldLabel: string;
   ItemNameFieldLabel: string;
+  OrderFieldLabel: string;
+  OrderFieldChronologicalOptionLabel: string;
+  OrderFieldReversedOptionLabel: string;
+  NumberOfItemsFieldLabel: string;
+  StyleFieldLabel: string;
+  StyleFieldThumbnailsOptionLabel: string;
+  StyleFieldListOptionLabel: string;
 }
 
 declare module 'TemplateWebPartStrings' {
