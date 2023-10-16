@@ -9,9 +9,11 @@ import {
   PropertyPaneLink,
   PropertyPaneSlider,
   PropertyPaneDropdown,
-  IPropertyPaneDropdownOption
+  IPropertyPaneDropdownOption,
+  PropertyPaneChoiceGroup
 
 } from '@microsoft/sp-property-pane';
+
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
 
@@ -31,6 +33,10 @@ export interface ITemplateWebPartProps {
   ListTitle: string;
   listName: string;
   itemName: string;
+  preconfiguredListName: string;
+  order: string;
+  numberOfItems: number;
+  style: string;
 }
 
 export default class TemplateWebPart extends BaseClientSideWebPart<ITemplateWebPartProps> {
@@ -59,6 +65,10 @@ export default class TemplateWebPart extends BaseClientSideWebPart<ITemplateWebP
         Rating: this.properties.Rating,
         listName: this.properties.listName,
         itemName: this.properties.itemName,
+        preconfiguredListName: this.properties.preconfiguredListName,
+        order: this.properties.order,
+        numberOfItems: this.properties.numberOfItems,
+        style: this.properties.style
       }
     );
 
@@ -349,6 +359,45 @@ export default class TemplateWebPart extends BaseClientSideWebPart<ITemplateWebP
                   options: this.items,
                   disabled: this.itemsDropdownDisabled,
                   selectedKey: this.properties.itemName // don't forget to bind this property so it is refreshed when the parent property changes
+                }),
+                PropertyPaneDropdown('preconfiguredListName', {
+                  label: strings.ListNameFieldLabel,
+                  options: [{
+                    key: 'Documents',
+                    text: 'Documents'
+                  },
+                  {
+                    key: 'Images',
+                    text: 'Images'
+                  }]
+                }),
+                PropertyPaneChoiceGroup('order', {
+                  label: strings.OrderFieldLabel,
+                  options: [{
+                    key: 'chronological',
+                    text: strings.OrderFieldChronologicalOptionLabel
+                  },
+                  {
+                    key: 'reversed',
+                    text: strings.OrderFieldReversedOptionLabel
+                  }]
+                }),
+                PropertyPaneSlider('numberOfItems', {
+                  label: strings.NumberOfItemsFieldLabel,
+                  min: 1,
+                  max: 10,
+                  step: 1
+                }),
+                PropertyPaneChoiceGroup('style', {
+                  label: strings.StyleFieldLabel,
+                  options: [{
+                    key: 'thumbnails',
+                    text: strings.StyleFieldThumbnailsOptionLabel
+                  },
+                  {
+                    key: 'list',
+                    text: strings.StyleFieldListOptionLabel
+                  }]
                 })]
             }
           ]

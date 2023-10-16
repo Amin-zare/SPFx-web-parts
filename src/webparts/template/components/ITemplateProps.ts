@@ -11,4 +11,8 @@ export interface ITemplateProps {
   Rating: number;
   listName: string;
   itemName: string;
+  order: string;
+  numberOfItems: number;
+  style: string;
+  preconfiguredListName: string;
 }
