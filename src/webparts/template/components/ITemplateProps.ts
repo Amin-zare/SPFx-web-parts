@@ -8,4 +8,5 @@ export interface ITemplateProps {
   hasTeamsContext: boolean;
   userDisplayName: string;
   context: any;
+  Rating: number;
 }

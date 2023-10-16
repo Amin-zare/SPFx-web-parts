@@ -5,6 +5,7 @@ define([], function () {
     "DescriptionFieldLabel": "Description Field",
     "ToggleFieldLabel": "Toggle",
     "MultiLineFieldLabel": "Multi line Text Field",
+    "RatingFieldLabel": "Rating",
     "AppLocalEnvironmentSharePoint": "The app is running on your local environment as SharePoint web part",
     "AppLocalEnvironmentTeams": "The app is running on your local environment as Microsoft Teams app",
     "AppLocalEnvironmentOffice": "The app is running on your local environment in office.com",

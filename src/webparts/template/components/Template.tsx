@@ -18,6 +18,7 @@ const Template: React.FC<ITemplateProps> = (props) => {
     hasTeamsContext,
     userDisplayName,
     context,
+    Rating,
   } = props;
 
   const [listData, setListData] = useState<ISPLists>({ value: [] });
@@ -78,6 +79,11 @@ const Template: React.FC<ITemplateProps> = (props) => {
           <div>
             Loading from :{" "}
             <strong>{escape(context.pageContext.web.title)}</strong>
+          </div>
+        </div>
+        <div>
+          <div>
+            Rating : <strong>{Rating}</strong>
           </div>
         </div>
       </div>
