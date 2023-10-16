@@ -5,8 +5,9 @@ import { escape } from "@microsoft/sp-lodash-subset";
 import ListItems from "./lists/ListItems";
 import { ITemplateProps } from "./ITemplateProps";
 import { ISPLists } from "./lists/IList";
-import { MSGraphClientV3 } from "@microsoft/sp-http";
 import { getListData } from "./lists/ListService";
+import { getMessages } from "./email/GraphService";
+import MessageList from "./email/MessageList";
 
 const Template: React.FC<ITemplateProps> = (props) => {
   const {
@@ -36,33 +37,6 @@ const Template: React.FC<ITemplateProps> = (props) => {
   const [listData, setListData] = useState<ISPLists>({ value: [] });
   const [listMessages, setListMessages] = useState<Message[]>([]);
 
-  const getMessages = (): void => {
-    const { context } = props;
-
-    if (context && context.msGraphClientFactory) {
-      context.msGraphClientFactory
-        .getClient("3")
-        .then((client: MSGraphClientV3): Promise<void> => {
-          return client
-            .api("/me/messages")
-            .top(5)
-            .orderby("receivedDateTime desc")
-            .get((error, messages) => {
-              if (error) {
-                console.error("Error fetching user information:", error);
-              } else {
-                setListMessages(messages.value);
-              }
-            });
-        })
-        .catch((error: string) => {
-          console.error("Error setting up Graph client:", error);
-        });
-    } else {
-      console.error("Context or msGraphClientFactory is not available.");
-    }
-  };
-
   useEffect(() => {
     // Fetch list data when the component mounts
     getListData(context)
@@ -73,16 +47,14 @@ const Template: React.FC<ITemplateProps> = (props) => {
         console.error("Error fetching list data:", error);
       });
 
-    getMessages();
+    getMessages(context)
+      .then((data) => {
+        setListMessages(data);
+      })
+      .catch((error: string) => {
+        console.error("Error fetching messages data:", error);
+      });
   }, []);
-
-  const listMessage = listMessages.map((item) => (
-    <ul key={item.id}>
-      <li>
-        <span className="ms-font-l">{item.subject}</span>
-      </li>
-    </ul>
-  ));
 
   const isEmpty = (value: string): boolean => {
     return value === undefined || value === null || value.length === 0;
@@ -146,7 +118,10 @@ const Template: React.FC<ITemplateProps> = (props) => {
         </div>
         <div>
           <div>
-            Email: <strong>{listMessage}</strong>
+            Email:{" "}
+            <strong>
+              <MessageList messages={listMessages} />
+            </strong>
           </div>
         </div>
       </div>
