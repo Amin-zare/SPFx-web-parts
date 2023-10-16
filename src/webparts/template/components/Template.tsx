@@ -2,11 +2,11 @@ import * as React from "react";
 import styles from "./Template.module.scss";
 import type { ITemplateProps } from "./ITemplateProps";
 import { escape } from "@microsoft/sp-lodash-subset";
-import { SPHttpClient, SPHttpClientResponse } from "@microsoft/sp-http";
 import ListItems from "./lists/ListItems";
-import { ISPLists, IState } from "./lists/IList";
-import { MSGraphClientV3 } from "@microsoft/sp-http";
-
+import { IState } from "./lists/IList";
+import { getListData } from "./lists/ListService"; // Import getListData
+import { getMessages } from "./email/GraphService"; // Import getMessages
+import MessageList from "./email/MessageList";
 export default class Template extends React.Component<ITemplateProps, IState> {
   constructor(props: ITemplateProps) {
     super(props);
@@ -18,60 +18,22 @@ export default class Template extends React.Component<ITemplateProps, IState> {
   }
 
   componentDidMount(): void {
-    this.getListData().catch((error: string) => {
-      // Handle any unhandled Promise rejections here
-      console.error("Unhandled Promise rejection:", error);
-    });
-    this.getMessages().catch((error: string) => {
-      // Handle any unhandled Promise rejections here
-      console.error("Unhandled Promise rejection:", error);
-    });
-  }
-
-  getListData = (): Promise<ISPLists> => {
-    const { context } = this.props;
-    return context.spHttpClient
-      .get(
-        `${context.pageContext.web.absoluteUrl}/_api/web/lists?$filter=Hidden eq false`,
-        SPHttpClient.configurations.v1
-      )
-      .then((response: SPHttpClientResponse) => {
-        return response.json();
-      })
-      .then((data: ISPLists) => {
+    getListData(this.props.context)
+      .then((data) => {
         this.setState({ listData: data.value });
       })
-      .catch((error: string) => {
-        console.error("Something happened:", error);
+      .catch((error) => {
+        // Handle any unhandled Promise rejections here
+        console.error("Unhandled Promise rejection:", error);
       });
-  };
-
-  getMessages(): Promise<void> {
-    const { context } = this.props;
-
-    if (context && context.msGraphClientFactory) {
-      return context.msGraphClientFactory
-        .getClient("3")
-        .then((client: MSGraphClientV3): Promise<void> => {
-          return client
-            .api("/me/messages")
-            .top(5)
-            .orderby("receivedDateTime desc")
-            .get()
-            .then((messages: any) => {
-              this.setState({ listMessages: messages.value });
-            })
-            .catch((error: any) => {
-              console.error("Error fetching user information:", error);
-            });
-        })
-        .catch((error: any) => {
-          console.error("Error setting up Graph client:", error);
-        });
-    } else {
-      console.error("Context or msGraphClientFactory is not available.");
-      return Promise.resolve(); // Return a resolved Promise to handle the missing Promise rejection
-    }
+    getMessages(this.props.context)
+      .then((messages) => {
+        this.setState({ listMessages: messages });
+      })
+      .catch((error) => {
+        // Handle any unhandled Promise rejections here
+        console.error("Unhandled Promise rejection:", error);
+      });
   }
 
   public render(): React.ReactElement<ITemplateProps> {
@@ -95,14 +57,6 @@ export default class Template extends React.Component<ITemplateProps, IState> {
     } = this.props;
     const { listData } = this.state;
     const { listMessages } = this.state;
-
-    const listMessage = listMessages.map((item) => (
-      <ul key={item.id}>
-        <li>
-          <span className="ms-font-l">{item.subject}</span>
-        </li>
-      </ul>
-    ));
 
     return (
       <section
@@ -158,7 +112,12 @@ export default class Template extends React.Component<ITemplateProps, IState> {
           </div>
           <div>
             <div>
-              Email: <strong>{listMessage}</strong>
+              Email:{" "}
+              <strong>
+                {" "}
+                <MessageList messages={listMessages} />{" "}
+                {/* Use the MessageList component */}
+              </strong>
             </div>
           </div>
         </div>
