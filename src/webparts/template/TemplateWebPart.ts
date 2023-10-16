@@ -34,6 +34,7 @@ export default class TemplateWebPart extends BaseClientSideWebPart<ITemplateWebP
         description: this.properties.description,
         checkbox: this.properties.checkbox,
         toggle: this.properties.toggle,
+        context: this.context,
         multiLineText: this.properties.multiLineText,
         isDarkTheme: this._isDarkTheme,
         environmentMessage: this._environmentMessage,

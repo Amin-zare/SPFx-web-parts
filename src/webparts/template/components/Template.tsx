@@ -13,6 +13,7 @@ const Template: React.FC<ITemplateProps> = (props: ITemplateProps) => {
     environmentMessage,
     hasTeamsContext,
     userDisplayName,
+    context,
   } = props;
 
   return (
@@ -45,6 +46,12 @@ const Template: React.FC<ITemplateProps> = (props: ITemplateProps) => {
         </div>
         <div>
           Multi-line : <strong>{escape(multiLineText)}</strong>
+        </div>
+        <div>
+          <div>
+            Loading from :
+            <strong>{escape(context.pageContext.web.title)}</strong>
+          </div>
         </div>
       </div>
     </section>
