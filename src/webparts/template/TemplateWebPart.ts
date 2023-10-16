@@ -17,12 +17,16 @@ import * as strings from 'TemplateWebPartStrings';
 import Template from './components/Template';
 import { ITemplateProps } from './components/ITemplateProps';
 
+import { SPHttpClient } from '@microsoft/sp-http';
+import { escape } from '@microsoft/sp-lodash-subset';
+
 export interface ITemplateWebPartProps {
   description: string;
   checkbox: boolean;
   toggle: boolean;
   multiLineText: string;
   Rating: number;
+  ListTitle: string;
 }
 
 export default class TemplateWebPart extends BaseClientSideWebPart<ITemplateWebPartProps> {
@@ -129,6 +133,32 @@ export default class TemplateWebPart extends BaseClientSideWebPart<ITemplateWebP
     return '';
   }
 
+
+  private async validateListTitle(value: string): Promise<string> {
+    if (value === null || value.length === 0) {
+      return "Provide the list name";
+    }
+
+    try {
+      const response = await this.context.spHttpClient.get(
+        this.context.pageContext.web.absoluteUrl +
+        `/_api/web/lists/getByTitle('${escape(value)}')?$select=Id`,
+        SPHttpClient.configurations.v1
+      );
+
+      if (response.ok) {
+        return "";
+      } else if (response.status === 404) {
+        return `List '${escape(value)}' doesn't exist in the current site`;
+      } else {
+        return `Error: ${response.statusText}. Please try again`;
+      }
+    } catch (error) {
+      return error.message;
+    }
+  }
+
+
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     return {
       pages: [
@@ -168,6 +198,11 @@ export default class TemplateWebPart extends BaseClientSideWebPart<ITemplateWebP
                   step: 1,
                   showValue: true,
                   value: 1
+                }),
+                PropertyPaneTextField('listTitle', {
+                  label: strings.ListTitleFieldLabel,
+                  onGetErrorMessage: this.validateListTitle.bind(this),
+                  deferredValidationTime: 500 // This property specifies the number of milliseconds that the SharePoint Framework waits before starting the validation process
                 })
               ]
             }
