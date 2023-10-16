@@ -12,4 +12,5 @@ export interface ISPList {
 export interface IState {
   listData: ISPList[];
   listMessages: MicrosoftGraph.Message[];
+  needsConfiguration: boolean;
 }
