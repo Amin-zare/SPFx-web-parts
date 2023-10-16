@@ -36,10 +36,35 @@
         "ListTitle": "",
         "listName": "",
         "itemName": "",
-        "preconfiguredListName": "",
         "order": "",
         "numberOfItems": 10,
         "style": ""
+      }
+    },
+    {
+      "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Advanced
+      "group": { "default": "Advanced" },
+      "title": { "default": "Recent images" },
+      "description": { "default": "Shows 5 most recent images" },
+      "officeFabricIconFontName": "Picture",
+      "properties": {
+        "preconfiguredListName": "Images",
+        "order": "reversed",
+        "numberOfItems": 5,
+        "style": "thumbnails"
+      }
+    },
+    {
+      "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Advanced
+      "group": { "default": "Advanced" },
+      "title": { "default": "Recent documents" },
+      "description": { "default": "Shows 10 most recent documents" },
+      "officeFabricIconFontName": "Documentation",
+      "properties": {
+        "preconfiguredListName": "Documents",
+        "order": "reversed",
+        "numberOfItems": 10,
+        "style": "list"
       }
     }
   ]
