@@ -6,6 +6,9 @@ import { escape } from "@microsoft/sp-lodash-subset";
 const Template: React.FC<ITemplateProps> = (props: ITemplateProps) => {
   const {
     description,
+    checkbox,
+    toggle,
+    multiLineText,
     isDarkTheme,
     environmentMessage,
     hasTeamsContext,
@@ -30,6 +33,18 @@ const Template: React.FC<ITemplateProps> = (props: ITemplateProps) => {
         <div> Environment Message :{environmentMessage}</div>
         <div>
           Description : <strong>{escape(description)}</strong>
+        </div>
+        <div>
+          Checkbox :
+          <strong>
+            {checkbox ? "Checkbox is checked" : "Checkbox is not checked"}
+          </strong>
+        </div>
+        <div>
+          Toggle :<strong>{toggle ? "Toggle is on" : "Toggle is off"}</strong>
+        </div>
+        <div>
+          Multi-line : <strong>{escape(multiLineText)}</strong>
         </div>
       </div>
     </section>

@@ -3,8 +3,11 @@ import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
 import {
   type IPropertyPaneConfiguration,
-  PropertyPaneTextField
+  PropertyPaneTextField,
+  PropertyPaneCheckbox,
+  PropertyPaneToggle,
 } from '@microsoft/sp-property-pane';
+
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IReadonlyTheme } from '@microsoft/sp-component-base';
 
@@ -14,6 +17,9 @@ import { ITemplateProps } from './components/ITemplateProps';
 
 export interface ITemplateWebPartProps {
   description: string;
+  checkbox: boolean;
+  toggle: boolean;
+  multiLineText: string;
 }
 
 export default class TemplateWebPart extends BaseClientSideWebPart<ITemplateWebPartProps> {
@@ -26,6 +32,9 @@ export default class TemplateWebPart extends BaseClientSideWebPart<ITemplateWebP
       Template,
       {
         description: this.properties.description,
+        checkbox: this.properties.checkbox,
+        toggle: this.properties.toggle,
+        multiLineText: this.properties.multiLineText,
         isDarkTheme: this._isDarkTheme,
         environmentMessage: this._environmentMessage,
         hasTeamsContext: !!this.context.sdks.microsoftTeams,
@@ -110,7 +119,19 @@ export default class TemplateWebPart extends BaseClientSideWebPart<ITemplateWebP
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
-                })
+                }),
+                PropertyPaneCheckbox('checkbox', {
+                  text: 'Checkbox'
+                }),
+                PropertyPaneToggle('toggle', {
+                  label: strings.ToggleFieldLabel,
+                  onText: 'On',
+                  offText: 'Off'
+                }),
+                PropertyPaneTextField('multiLineText', {
+                  label: strings.MultiLineFieldLabel,
+                  multiline: true
+                }),
               ]
             }
           ]

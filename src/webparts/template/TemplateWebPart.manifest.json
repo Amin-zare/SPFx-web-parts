@@ -28,7 +28,10 @@
       "description": { "default": "Template description" },
       "officeFabricIconFontName": "Page",
       "properties": {
-        "description": "Template"
+        "description": "Template",
+        "checkbox": true,
+        "toggle": false,
+        "multiLineText": ""
       }
     }
   ]
