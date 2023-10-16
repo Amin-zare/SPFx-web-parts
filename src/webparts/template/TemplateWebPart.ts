@@ -114,6 +114,21 @@ export default class TemplateWebPart extends BaseClientSideWebPart<ITemplateWebP
   protected get disableReactivePropertyChanges(): boolean {
     return true;
   }
+
+
+  private validateDescription(value: string): string {
+    if (value === null ||
+      value.trim().length === 0) {
+      return 'Provide a description';
+    }
+
+    if (value.length > 40) {
+      return 'Description should not be longer than 40 characters';
+    }
+
+    return '';
+  }
+
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
     return {
       pages: [
@@ -126,7 +141,8 @@ export default class TemplateWebPart extends BaseClientSideWebPart<ITemplateWebP
               groupName: strings.BasicGroupName,
               groupFields: [
                 PropertyPaneTextField('description', {
-                  label: strings.DescriptionFieldLabel
+                  label: strings.DescriptionFieldLabel,
+                  onGetErrorMessage: this.validateDescription.bind(this)
                 }),
                 PropertyPaneCheckbox('checkbox', {
                   text: 'Checkbox'
